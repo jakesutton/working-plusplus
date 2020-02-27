@@ -61,16 +61,16 @@ describe( 'extractCommand', () => {
 
 describe( 'extractPlusMinusEventData', () => {
 
-  it( 'drops message without an @ symbol', () => {
-    expect( helpers.extractPlusMinusEventData( 'Hello++' ) ).toBeFalse();
-  });
-
   it( 'drops messages without a valid operation', () => {
     expect( helpers.extractPlusMinusEventData( '@Hello' ) ).toBeFalse();
   });
 
   it( 'drops messages without a valid user/item', () => {
     expect( helpers.extractPlusMinusEventData( '@++' ) ).toBeFalse();
+  });
+
+  it('drops messages with the operation crowded in a string (or URL)', () => {
+    expect(helpers.extractPlusMinusEventData('stuff++junk')).toBeFalse();
   });
 
   it( 'extracts a \'thing\' and operation from the start of a message', () => {
@@ -83,6 +83,20 @@ describe( 'extractPlusMinusEventData', () => {
   it( 'extracts a user and operation from the start of a message', () => {
     expect( helpers.extractPlusMinusEventData( '<@U87654321>++ that was awesome' ) ).toEqual({
       item: 'U87654321',
+      operation: '+'
+    });
+  });
+
+  it('does not require an @ symbol', () => {
+    expect(helpers.extractPlusMinusEventData('Hello++')).toEqual({
+      item: 'Hello',
+      operation: '+'
+    });
+  });
+
+  it('defaults to a single word when there is no @ symbol', () => {
+    expect(helpers.extractPlusMinusEventData('I really like some thing++')).toEqual({
+      item: 'thing',
       operation: '+'
     });
   });
