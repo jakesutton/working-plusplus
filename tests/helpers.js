@@ -127,6 +127,10 @@ describe( 'extractPlusMinusEventData', () => {
     {
       supplied: '@SomethingRandom123',
       expected: 'SomethingRandom123'
+    },
+    {
+      supplied: 'some thing',
+      expected: 'thing'
     }
   ];
 
